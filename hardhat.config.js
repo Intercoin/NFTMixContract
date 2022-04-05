@@ -133,6 +133,8 @@ module.exports = {
   paths: {
     
     sources: "./contracts"
+    //, ../submodules/NonFungibleTokenContract/contracts
+    
     
   },
   gasReporter: {
