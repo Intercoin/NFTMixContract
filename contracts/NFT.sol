@@ -2,36 +2,11 @@
 pragma solidity 0.8.11;
 
 import "../submodules/NonFungibleTokenContract/contracts/v2/NFTMain.sol";
-
-abstract contract NFTRemixChild {
-//     function fork(parentSeriesId, childSeriesId, SeriesInfo, signature)
-    address remixContract;
-    bool remixContractSetup;
-
-    event RemixSetup(address addr);
-
-    modifier runOnlyOnce() {
-        require(remixContractSetup == false, "only once");
-        remixContractSetup = true;
-        _;
-    }
-    function setRemixContract(address remixContract_) public runOnlyOnce {
-        remixContract = remixContract_;
-    }
-
-    function _buy(uint256 tokenId) internal {
-        // TODO 0: implement creation tree of parent tokens
-
-        //calculate funds need to pay for all tokens
-        
-    }
-
-
-
-}
-
+import "./interfaces/INFTremix.sol";
 //
-contract NFT is NFTMain, NFTRemixChild {
+contract NFT is NFTMain {
+
+    
      /**
      * @dev Returns the owner of the `tokenId` token.
      *
@@ -47,9 +22,23 @@ contract NFT is NFTMain, NFTRemixChild {
 
         if (owner == address(0)) {
             // try to check in nft remix !
+            owner = INFTremix.ownerOf(address(this), tokenId);
         }
 
         return owner;
+        
+    }
+
+    function _buyRecursive(uint256 tokenId) internal {
+        // TODO 0:
+        //1. if primary sale then remix
+        //1.a remix create all parent virtual tokens for account 
+        //1.a.a remix revert if token is a tree-part of
+        //1.b nft transfer eth(or approve tokens) via array which remix will return. i.e two arrays: amounts, recipients 
+        
+        if 
+        // primarysale 
+        function makeTree
         
     }
 
@@ -66,7 +55,7 @@ contract NFT is NFTMain, NFTRemixChild {
         payable 
         nonReentrant 
     {   
-        _buy(tokenId);
+        _buyRecursive(tokenId);
         super.buy(tokenId, price, safe, hookCount);
     }
     
@@ -82,10 +71,13 @@ contract NFT is NFTMain, NFTRemixChild {
         override
         nonReentrant 
     {
-        _buy(tokenId);
+        _buyRecursive(tokenId);
         super.buy(tokenId, currency, price, safe, hookCount);
 
     }
+
+
+
 
     //function setSeriesInfo
     //function transfer
